@@ -1,0 +1,23 @@
+I have read the following text, delimited by triple quotes:
+
+"""
+{{ text }} 
+"""
+
+Generate five multiple choice questions to test my understanding of the content. 
+
+Responses must be in JSON format. Here is an example showing the response structure:
+[
+    {
+        "question": "What is the relationship between force and mass? ",
+        "choices": [
+            {"label": "A", "text": "Force is the product of mass and acceleration."},
+            {"label": "B", "text": "Force is the sum of mass and acceleration."},
+            {"label": "C", "text": "Force is the difference between mass and acceleration."},
+            {"label": "D", "text": "There is no relationship between force and mass."}
+        ],
+        "answer": "A",
+        "explanation": "Newton's second law states that F = m * a."
+    },
+    ...
+]

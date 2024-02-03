@@ -8,6 +8,7 @@ from .serializers import JourneySerializer
 from .models import Journey
 
 from sections.models import Section
+from sections.serializers import SectionSerializer
 
 from utilities.reader import extract_text_from_document
 from utilities.summary import perform_abstractive_summary
@@ -60,3 +61,12 @@ class SingleJourney(generics.RetrieveDestroyAPIView):
         return get_object_or_404(
             Journey, user=self.request.user, pk=self.kwargs['journey_id']
         )
+
+
+class JourneySections(generics.ListAPIView):
+    serializer_class = SectionSerializer
+
+    def get_queryset(self):
+        return get_object_or_404(
+            Journey, user=self.request.user, pk=self.kwargs['journey_id']
+        ).sections

@@ -11,18 +11,18 @@ client = OpenAI(
 
 # Set up Jinja
 JINJA_ENV = Environment(loader=FileSystemLoader('./utilities/prompts'))
-MULTIPLE_CHOICE_QUESTIONS_TEMPLATE = JINJA_ENV.get_template('multiple_choice_questions.jinja2')
+QUESTION_ANSWERING_TEMPLATE = JINJA_ENV.get_template('question_answering.jinja2')
 
 
 
-def generate_evaluation_questions(text):
+def generate_response_to_question(question, knowledge):
     """
-    Generate evaluation questions for a piece of text using Azure OpenAI.
+    Use Azure OpenAI to get an answer to a question.
     """
 
     # Create a prompt to use
-    prompt = MULTIPLE_CHOICE_QUESTIONS_TEMPLATE.render(
-        text=text
+    prompt = QUESTION_ANSWERING_TEMPLATE.render(
+        text=knowledge, question=question
     )
 
     # Generate a response
@@ -31,7 +31,6 @@ def generate_evaluation_questions(text):
         messages=[
             {"role": "user", "content": prompt}
         ],
-        response_format={"type": "json_object"}
     )
 
     return completion.choices[0].message.content

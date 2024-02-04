@@ -60,3 +60,19 @@ class DeleteToken(APIView):
             token.delete()
 
         return Response(status=status.HTTP_200_OK)
+
+
+class VerifyToken(APIView):
+    """Verify that a token is valid."""
+
+    authentication_classes = []
+    permission_classes = []
+
+    def post(self, request):
+
+        try:
+            token = Token.objects.get(key=request.data.get('token'))
+        except Token.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(status=status.HTTP_200_OK)

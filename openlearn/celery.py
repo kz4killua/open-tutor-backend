@@ -8,6 +8,18 @@ from celery import Celery
 # Set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'openlearn.settings')
 
+# Configure SSL
+if settings.DEVELOPMENT_MODE:
+    broker_use_ssl = None
+    redis_backend_use_ssl = None
+else:
+    broker_use_ssl = {
+        'ssl_cert_reqs': ssl.CERT_NONE
+    }
+    redis_backend_use_ssl = {
+        'ssl_cert_reqs': ssl.CERT_NONE
+    }
+
 app = Celery('openlearn')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')

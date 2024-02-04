@@ -17,6 +17,21 @@ class UserManager(BaseUserManager):
         # Save and return the user
         user.save()
         return user
+    
+
+    def create_superuser(self, username, email, password):
+        """Create a superuser with a username and password."""
+
+        # Create a regular user
+        user = self.create_user(username, password)
+
+        # Apply superuser privileges
+        user.is_superuser = True
+        user.is_staff = True
+
+        # Save and return the user
+        user.save()
+        return user
 
 
 class User(AbstractUser):

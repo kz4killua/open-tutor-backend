@@ -4,29 +4,33 @@ I have read the following text, delimited by triple quotes:
 {{ text }} 
 """
 
-Generate three multiple choice questions to test my understanding of the content. 
+Generate three multiple choice questions to evaluate my understanding of the content. 
 
-Responses must be a JSON array of three objects. Each object must include a "question", four "choices", the "answer", and an "explanation". 
+Responses must contain a JSON array of three objects. Each object must include a "question", four "choices", the "answer", and an "explanation". 
 
 The "explanation" must clearly explain to the user why the correct answer is right.
 
 Here is an example showing the response structure:
-[
-    {
-        "question": "What is the relationship between force and mass? ",
-        "choices": [
-            {"label": 1, "text": "Force is the product of mass and acceleration."},
-            {"label": 2, "text": "Force is the sum of mass and acceleration."},
-            {"label": 3, "text": "Force is the difference between mass and acceleration."},
-            {"label": 4, "text": "There is no relationship between force and mass."}
-        ],
-        "answer": "A",
-        "explanation": "Newton's second law states that F = m * a."
-    },
-    {
-        ...
-    },
-    {
-        ...
-    }
-]
+"""
+{
+    "evaluation": [
+        {
+            "question": "What is the relationship between force and mass? ",
+            "choices": [
+                {"label": 1, "text": "Force is the product of mass and acceleration."},
+                {"label": 2, "text": "Force is the sum of mass and acceleration."},
+                {"label": 3, "text": "Force is the difference between mass and acceleration."},
+                {"label": 4, "text": "There is no relationship between force and mass."}
+            ],
+            "answer": "A",
+            "explanation": "Newton's second law states that F = m * a."
+        },
+        {
+            ... # another question
+        },
+        {
+            ... # another question
+        }
+    ]
+}
+"""

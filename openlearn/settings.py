@@ -160,3 +160,7 @@ REST_FRAMEWORK = {
 
 # Configure Django CORS headers
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Configure Celery
+CELERY_BROKER_URL = "redis://localhost:6379"
+CELERY_RESULT_BACKEND = "redis://localhost:6379"

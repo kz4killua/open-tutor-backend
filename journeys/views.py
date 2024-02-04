@@ -10,9 +10,7 @@ from .models import Journey
 from sections.models import Section
 from sections.serializers import SectionSerializer
 
-from utilities.reader import extract_text_from_document
-from utilities.summary import perform_abstractive_summary
-from utilities.evaluation import generate_evaluation_questions
+from .tasks import create_journey_task
 
 
 class Journeys(generics.ListCreateAPIView):
@@ -26,33 +24,20 @@ class Journeys(generics.ListCreateAPIView):
         base_file = request.data.get('base_file')
         title = request.data.get('title')
 
-        # Extract the text content of the uploaded file
-        sections = extract_text_from_document(base_file)
-
-        # Generate a summary for each section
-        summaries = perform_abstractive_summary(sections)
-
-        # Generate questions and answers for the section
-        evaluations = [
-            generate_evaluation_questions(text) for text in summaries
-        ]
-
-        # Create a journey and the corresponding sections
+        # Create a journey
         journey = Journey.objects.create(
             user=request.user,
             title=title,
             base_file=base_file,
         )
 
-        for summary, evaluation in zip(summaries, evaluations):
-            Section.objects.create(
-                journey=journey,
-                content=summary,
-                evaluation=evaluation
-            )
+        # Set the task to initialize journey sections
+        create_journey_task.delay(
+            journey.id
+        )
 
         return Response(self.get_serializer(journey).data, status=status.HTTP_202_ACCEPTED)
-    
+
 
 class SingleJourney(generics.RetrieveDestroyAPIView):
     serializer_class = JourneySerializer

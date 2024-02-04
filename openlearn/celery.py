@@ -20,7 +20,11 @@ else:
         'ssl_cert_reqs': ssl.CERT_NONE
     }
 
-app = Celery('openlearn')
+app = Celery(
+    'openlearn', 
+    broker_use_ssl = broker_use_ssl,
+    redis_backend_use_ssl = redis_backend_use_ssl
+)
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 

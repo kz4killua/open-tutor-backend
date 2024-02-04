@@ -22,4 +22,4 @@ def extract_text_from_document(file):
     # Extract the paragraphs from the text
     paragraphs = [paragraph.content for paragraph in result.paragraphs]
     
-    return paragraphs
+    return '\n\n'.join(paragraphs)

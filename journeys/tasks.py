@@ -5,6 +5,7 @@ from celery import shared_task
 from utilities.reader import extract_text_from_document
 from utilities.summary import perform_abstractive_summary
 from utilities.evaluation import generate_evaluation_questions
+from utilities.segments import split_text_into_chunks
 
 from django.shortcuts import get_object_or_404
 
@@ -23,7 +24,8 @@ def create_journey_task(journey_id):
     base_file = io.BytesIO(journey.base_file.file.read())
     
     # Extract the text content of the uploaded file
-    sections = extract_text_from_document(base_file)
+    text = extract_text_from_document(base_file)
+    sections = split_text_into_chunks(text)
 
     # Generate a summary for each section
     summaries = perform_abstractive_summary(sections)

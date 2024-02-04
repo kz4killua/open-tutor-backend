@@ -1,4 +1,4 @@
-from rest_framework.generics import RetrieveAPIView
+from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -10,7 +10,7 @@ from .models import Section
 from utilities.answering import generate_response_to_question
 
 
-class SingleSection(RetrieveAPIView):
+class SingleSection(RetrieveUpdateAPIView):
     serializer_class = SectionSerializer
 
     def get_object(self):

@@ -48,14 +48,17 @@ INSTALLED_APPS = [
     # third-party additions
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders',
 
     # created applications
     'accounts.apps.AccountsConfig',
+    'documents.apps.DocumentsConfig',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -144,10 +147,30 @@ AUTH_USER_MODEL = 'accounts.User'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication'
-    ]
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '30/min',
+        'user': '30/min',
+    },
 }
 
 if DEVELOPMENT_MODE:
     REST_FRAMEWORK['DEFAULT_AUTHENTICATION_CLASSES'].append(
         'rest_framework.authentication.BasicAuthentication'
     )
+
+# Configure media files
+if DEVELOPMENT_MODE:
+    MEDIA_ROOT = BASE_DIR / 'media'
+    MEDIA_URL = '/media/'
+
+
+# Configure Django CORS headers
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')

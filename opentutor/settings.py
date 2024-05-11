@@ -174,3 +174,6 @@ if DEVELOPMENT_MODE:
 
 # Configure Django CORS headers
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
+
+# Configure Pinecone
+PINECONE_INDEX_NAME = os.getenv('PINECONE_INDEX_NAME')

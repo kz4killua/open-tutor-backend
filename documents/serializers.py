@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Document
+from .models import Document, Message
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -7,3 +7,9 @@ class DocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Document
         fields = ['id', 'name', 'user', 'created', 'file']
+
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ['id', 'role', 'content', 'quote', 'created']

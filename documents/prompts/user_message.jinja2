@@ -1,0 +1,9 @@
+{% if quote %}
+Based on the following quoted text: 
+"""
+{{ quote }}
+"""
+{{ query }}
+{% else %}
+{{ query }}
+{% endif %}

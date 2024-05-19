@@ -1,3 +1,4 @@
+import json
 from documents.models import Message, Document
 from documents.utilities.vectorstore import retrieve_relevant_documents
 from django.shortcuts import get_object_or_404
@@ -81,13 +82,24 @@ def stream_message_response(user_message, system_message, assistant_message, mes
         stream=True
     )
 
+    # Commit messages to the database and generate IDs
+    user_message.save()
+    system_message.save()
+    assistant_message.save()
+
     for chunk in completion:
         delta = chunk.choices[0].delta
         if delta.content:
             token = delta.content
             assistant_message.content += token
-            yield token
 
-    user_message.save()
-    system_message.save()
+            # Stream responses as data-only SSEs
+            event = json.dumps({
+                "token": token,
+                "assistant_message_id": assistant_message.id,
+                "user_message_id": user_message.id
+            })
+            yield f"\ndata: {event}\n\n"
+
+    # Save changes to the assistant message
     assistant_message.save()

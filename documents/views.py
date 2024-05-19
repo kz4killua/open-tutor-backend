@@ -78,7 +78,9 @@ class DocumentMessages(generics.ListCreateAPIView):
             role__in=("user", "assistant")
         )
 
-
-        return StreamingHttpResponse(
+        response = StreamingHttpResponse(
             stream_message_response(user_message, system_message, assistant_message, message_history)
         )
+        response['Content-Type'] = 'text/event-stream'
+
+        return response

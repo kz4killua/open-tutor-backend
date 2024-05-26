@@ -38,3 +38,10 @@ class Message(models.Model):
 
     class Meta:
         ordering = ["-created"]
+
+
+class Flashcard(models.Model):
+    document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name='flashcards')
+    referenced_page_number = models.IntegerField()
+    front = models.TextField(max_length=1024)
+    back = models.TextField(max_length=1024)

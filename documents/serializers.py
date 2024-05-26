@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Document, Message
+from .models import Document, Message, Flashcard
 
 
 class DocumentSerializer(serializers.ModelSerializer):
@@ -18,3 +18,9 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ['id', 'role', 'content', 'quote', 'created']
+
+
+class FlashcardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Flashcard
+        fields = ['id', 'referenced_page_number', 'front', 'back']

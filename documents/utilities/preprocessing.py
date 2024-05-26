@@ -14,17 +14,14 @@ def count_tokens(text: str):
 
 def extract_text_from_document(document: OpenTutorDocument):
     """
-    Returns an array of LangChain Documents for each page of an uploaded OpenTutorDocument.
+    Returns texts for each page of an OpenTutor document.
     """
 
     # Read the text from each page of the OpenTutorDocument
     with fitz.open(stream=document.file.file.read()) as f:
-        pages = [page.get_text() for page in f]
-
-    # Convert the texts into LangChain Documents
-    pages = [LangChainDocument(page, metadata={
-        'document_id': document.id, 'page_number': i
-    }) for i, page in enumerate(pages, 1)]
+        pages = {
+            page_number: page.get_text() for page_number, page in enumerate(f, 1)
+        }
 
     return pages
 

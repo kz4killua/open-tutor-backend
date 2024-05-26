@@ -77,7 +77,7 @@ def stream_message_response(user_message, system_message, assistant_message, mes
     ]))
 
     completion = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
         messages=messages,
         stream=True
     )

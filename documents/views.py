@@ -22,11 +22,12 @@ class DocumentList(generics.ListCreateAPIView):
     def get_queryset(self):
         return Document.objects.filter(user=self.request.user)
     
-    def create(self, request, *args, **kwargs):
-        response = super().create(request, *args, **kwargs)
+    def perform_create(self, serializer):
+
+        super().perform_create(serializer)
 
         # Upload the created document to the vectorstore
-        document = Document.objects.get(id=response.data['id'])
+        document = serializer.instance
         page_texts = extract_text_from_document(document)
         langchain_documents = [
             LangChainDocument(page_text, metadata={
@@ -41,8 +42,6 @@ class DocumentList(generics.ListCreateAPIView):
         document.metadata['pinecone_ids'] = pinecone_ids
         document.metadata['page_texts'] = page_texts
         document.save()
-
-        return response
 
 
 class DocumentDetail(generics.RetrieveUpdateDestroyAPIView):

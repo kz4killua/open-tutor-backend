@@ -1,0 +1,5 @@
+.git
+venv
+media
+*.sqlite3
+TODO.md

@@ -1,0 +1,13 @@
+services:
+  web:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: opentutor-backend
+    env_file:
+      - .env
+    environment:
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    command: sh -c "chmod +x /app/migrate.sh && sh /app/migrate.sh && /app/entrypoint.sh"

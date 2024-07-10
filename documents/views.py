@@ -2,9 +2,11 @@ from django.http import StreamingHttpResponse
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
 from rest_framework import generics
-from rest_framework.views import APIView
 from rest_framework import exceptions
 from rest_framework import serializers
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from .serializers import DocumentSerializer, MessageSerializer, FlashcardSerializer
 from .models import Document, Message, Flashcard
 
@@ -14,6 +16,7 @@ from .utilities.vectorstore import upload_langchain_documents_to_vectorstore, de
 from .utilities.messages import construct_user_message, construct_system_message, construct_assistant_message, stream_message_response
 from .utilities.preprocessing import extract_text_from_document
 from .utilities.flashcards import create_flashcards
+from .utilities.feedback import get_feedback
 
 
 class DocumentList(generics.ListCreateAPIView):
@@ -120,3 +123,28 @@ class DocumentFlashcards(generics.ListAPIView):
             )
 
         return flashcards
+
+
+class EvaluationFeedback(APIView):
+    serializer_class = FlashcardSerializer
+    
+    def post(self, request, *args, **kwargs):
+
+        questions_correct = [
+            get_object_or_404(
+                Flashcard, document__id=self.kwargs['pk'], 
+                document__user=request.user, pk=flashcard_id
+            ).front
+            for flashcard_id in request.data.get('correct')
+        ]
+        questions_wrong = [
+            get_object_or_404(
+                Flashcard, document__id=self.kwargs['pk'], 
+                document__user=request.user, pk=flashcard_id
+            ).front
+            for flashcard_id in request.data.get('wrong')
+        ]
+
+        feedback = get_feedback(questions_correct, questions_wrong)
+
+        return Response({'feedback': feedback}, status=status.HTTP_200_OK)

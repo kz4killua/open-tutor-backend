@@ -1,0 +1,28 @@
+The user just took an evaluation test. 
+
+Here are some questions the user got wrong:
+
+{% for question in questions_wrong %}
+* {{ question }}
+{% endfor %}
+
+Here are some other questions the user got right:
+
+{% for question in questions_correct %}
+* {{ question }}
+{% endfor %}
+
+Provide 3 feedback points for the user. The feedback should: 
+* Be specific and clear
+* Focus on key areas that will have the most impact
+* Be encouraging and constructive
+* Be short: 1 short sentence per point
+
+Start each point with a hyphen and on a new line. Use pure plain text, no markdown or Latex.
+
+Here is an example response: 
+"""
+- You need to work on your understanding of the concept of probability.
+- Review the quadratic formula and its applications. 
+- You are doing well with your understanding of the concept of limits. Keep it up!
+"""

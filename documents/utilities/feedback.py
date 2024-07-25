@@ -19,7 +19,7 @@ def get_feedback(questions_correct, questions_wrong):
         questions_wrong=questions_wrong
     )
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "user", "content": prompt}
         ],

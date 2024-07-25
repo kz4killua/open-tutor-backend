@@ -20,7 +20,7 @@ def create_flashcards(document, page_number):
         page_text=page_text
     )
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=[
             {"role": "user", "content": prompt}
         ],

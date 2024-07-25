@@ -1,3 +1,5 @@
+import random
+
 from django.http import StreamingHttpResponse
 from django.core.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
@@ -99,30 +101,42 @@ class DocumentMessages(generics.ListCreateAPIView):
         response['Content-Type'] = 'text/event-stream'
 
         return response
-
-
-class DocumentFlashcards(generics.ListAPIView):
-    serializer_class = FlashcardSerializer
-
-    def get_object(self):
-        return get_object_or_404(Document, user=self.request.user, pk=self.kwargs['pk'])
     
-    def get_queryset(self):
 
-        page_number = self.request.query_params.get('page_number')
-        document = self.get_object()
-        flashcards = document.flashcards.filter(
-            referenced_page_number=page_number
-        )
+class PracticeFlashcards(APIView):
+    serializer_class = FlashcardSerializer
+    
+    def get(self, request, *args, **kwargs):
+        
+        document = get_object_or_404(Document, user=request.user, pk=self.kwargs['pk'])
+        num_pages = len(document.metadata['page_texts'])
+        max_flashcards = 10
+        evaluation_questions = []
+        shuffled_pages = list(range(num_pages))
+        random.shuffle(shuffled_pages)
 
-        # Create the flashcards if they have not been created
-        if not flashcards.exists():
-            create_flashcards(document, page_number)
-            flashcards = document.flashcards.filter(
+        # Pick out the maximum number of flashcards from random pages
+        for page_number in shuffled_pages:
+            page_flashcards = document.flashcards.filter(
                 referenced_page_number=page_number
             )
+            
+            # Create the flashcards if they have not been created
+            if not page_flashcards.exists():
+                create_flashcards(document, page_number)
+                page_flashcards = document.flashcards.filter(
+                    referenced_page_number=page_number
+                )
 
-        return flashcards
+            evaluation_questions.extend(page_flashcards)
+
+            if len(evaluation_questions) >= max_flashcards:
+                evaluation_questions = evaluation_questions[:max_flashcards]
+                break
+
+        serializer = FlashcardSerializer(evaluation_questions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class EvaluationFeedback(APIView):

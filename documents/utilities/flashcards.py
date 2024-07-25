@@ -13,7 +13,7 @@ client = OpenAI()
 def create_flashcards(document, page_number):
     """Creates and saves flashcards for a particular page of a document."""
 
-    page_text = document.metadata['page_texts'][page_number]
+    page_text = document.metadata['page_texts'][str(page_number)]
     
     # Use an LLM to generate the flashcards
     prompt = FLASHCARD_CREATE_PROMPT_TEMPLATE.render(

@@ -112,7 +112,7 @@ class PracticeFlashcards(APIView):
         num_pages = len(document.metadata['page_texts'])
         max_flashcards = 10
         evaluation_questions = []
-        shuffled_pages = list(range(num_pages))
+        shuffled_pages = list(range(1, num_pages + 1))
         random.shuffle(shuffled_pages)
 
         # Pick out the maximum number of flashcards from random pages

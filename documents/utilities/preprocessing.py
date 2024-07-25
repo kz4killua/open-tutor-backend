@@ -20,7 +20,7 @@ def extract_text_from_document(document: OpenTutorDocument):
     # Read the text from each page of the OpenTutorDocument
     with fitz.open(stream=document.file.file.read()) as f:
         pages = {
-            page_number: page.get_text() for page_number, page in enumerate(f, 1)
+            int(page_number): page.get_text() for page_number, page in enumerate(f, 1)
         }
 
     return pages

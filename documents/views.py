@@ -122,8 +122,17 @@ class Flashcards(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class Feedback(APIView):
-    serializer_class = FlashcardSerializer
+class FlashcardsFromText(APIView):
+
+    def post(self, request, *args, **kwargs):
+        document = get_object_or_404(Document, user=request.user, pk=self.kwargs['pk'])
+        text = request.data.get('text')
+        flashcards = create_flashcards(document, text)
+        serializer = FlashcardSerializer(flashcards, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FlashcardFeedback(APIView):
     
     def post(self, request, *args, **kwargs):
 

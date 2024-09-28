@@ -2,13 +2,10 @@ import json
 from documents.models import Message, Document
 from documents.utilities.vectorstore import retrieve_relevant_documents
 from django.shortcuts import get_object_or_404
-from jinja2 import Environment, FileSystemLoader
 from openai import OpenAI
 
+from .templates import USER_MESSAGE_PROMPT_TEMPLATE, SYSTEM_MESSAGE_PROMPT_TEMPLATE
 
-JINJA_ENV = Environment(loader=FileSystemLoader('./documents/prompts'))
-USER_MESSAGE_PROMPT_TEMPLATE = JINJA_ENV.get_template('user_message.jinja2')
-SYSTEM_MESSAGE_PROMPT_TEMPLATE = JINJA_ENV.get_template('system_message.jinja2')
 
 client = OpenAI()
 

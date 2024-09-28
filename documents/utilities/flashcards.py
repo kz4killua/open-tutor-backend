@@ -1,11 +1,9 @@
 import re
 from documents.models import Flashcard
-from jinja2 import Environment, FileSystemLoader
 from openai import OpenAI
 
+from .templates import FLASHCARD_CREATE_PROMPT_TEMPLATE
 
-JINJA_ENV = Environment(loader=FileSystemLoader('./documents/prompts'))
-FLASHCARD_CREATE_PROMPT_TEMPLATE = JINJA_ENV.get_template('flashcard_create.jinja2')
 
 client = OpenAI()
 

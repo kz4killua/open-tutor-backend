@@ -1,11 +1,7 @@
-import re
-from documents.models import Flashcard
-from jinja2 import Environment, FileSystemLoader
 from openai import OpenAI
 
+from .templates import FEEDBACK_PROMPT_TEMPLATE
 
-JINJA_ENV = Environment(loader=FileSystemLoader('./documents/prompts'))
-FEEDBACK_PROMPT_TEMPLATE = JINJA_ENV.get_template('feedback.jinja2')
 
 client = OpenAI()
 

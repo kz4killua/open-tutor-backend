@@ -39,6 +39,6 @@ def create_flashcards(document, text):
 
 def parse_llm_response_for_flashcards(text):
     """Extracts flashcards from the LLM response."""
-    pattern = r"Front: (.+?)\nBack: (.+?)\n"
+    pattern = r"Front: (.+?)\nBack: (.+?)(?:\n|\Z)"
     matches = re.findall(pattern, text, re.DOTALL)
     return matches

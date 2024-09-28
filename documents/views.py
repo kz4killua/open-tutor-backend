@@ -121,7 +121,7 @@ class Overview(APIView):
 
 class Flashcards(APIView):
     
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
 
         document = get_object_or_404(Document, user=request.user, pk=self.kwargs['pk'])
 
@@ -140,7 +140,7 @@ class Flashcards(APIView):
 
 class FlashcardsFromText(APIView):
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
         document = get_object_or_404(Document, user=request.user, pk=self.kwargs['pk'])
         text = request.data.get('text')
         flashcards = create_flashcards(document, text)
@@ -150,21 +150,20 @@ class FlashcardsFromText(APIView):
 
 class FlashcardFeedback(APIView):
     
-    def post(self, request, *args, **kwargs):
+    def post(self, request):
 
         questions_correct = [
-            get_object_or_404(
+            flashcard.front for flashcard in get_list_or_404(
                 Flashcard, document__id=self.kwargs['pk'], 
-                document__user=request.user, pk=flashcard_id
-            ).front
-            for flashcard_id in request.data.get('correct')
+                document__user=request.user, pk__in=request.data.get('correct')
+            )
         ]
+
         questions_wrong = [
-            get_object_or_404(
+            flashcard.front for flashcard in get_list_or_404(
                 Flashcard, document__id=self.kwargs['pk'], 
-                document__user=request.user, pk=flashcard_id
-            ).front
-            for flashcard_id in request.data.get('wrong')
+                document__user=request.user, pk__in=request.data.get('wrong')
+            )
         ]
 
         feedback = get_feedback(questions_correct, questions_wrong)

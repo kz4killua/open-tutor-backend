@@ -14,6 +14,7 @@ class Document(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     metadata = models.JSONField(default=dict)
     flashcards_created = models.BooleanField(default=False)
+    overview = models.TextField(max_length=2048, blank=True, null=True)
 
     def __str__(self) -> str:
         return self.name

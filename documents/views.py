@@ -19,6 +19,7 @@ from .utilities.messages import construct_user_message, construct_system_message
 from .utilities.preprocessing import extract_text_from_document
 from .utilities.flashcards import create_flashcards
 from .utilities.feedback import get_feedback
+from .utilities.overview import create_overview
 
 
 class DocumentList(generics.ListCreateAPIView):
@@ -101,7 +102,22 @@ class DocumentMessages(generics.ListCreateAPIView):
         response['Content-Type'] = 'text/event-stream'
 
         return response
-    
+
+
+class Overview(APIView):
+
+    def get(self, request):
+
+        document = get_object_or_404(Document, user=request.user, pk=self.kwargs['pk'])
+
+        # Create an overview for the document if it does not exist
+        if not document.overview:
+            document_text = '\n'.join(document.metadata['page_texts'].values())
+            document.overview = create_overview(document_text)
+            document.save()
+
+        return Response({'overview': document.overview}, status=status.HTTP_200_OK)
+
 
 class Flashcards(APIView):
     

@@ -2,7 +2,7 @@ import random
 
 from django.http import StreamingHttpResponse
 from django.core.exceptions import ValidationError
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, get_list_or_404
 from rest_framework import generics
 from rest_framework import exceptions
 from rest_framework import serializers
@@ -103,43 +103,26 @@ class DocumentMessages(generics.ListCreateAPIView):
         return response
     
 
-class PracticeFlashcards(APIView):
-    serializer_class = FlashcardSerializer
+class Flashcards(APIView):
     
     def get(self, request, *args, **kwargs):
-        
+
         document = get_object_or_404(Document, user=request.user, pk=self.kwargs['pk'])
-        num_pages = len(document.metadata['page_texts'])
-        max_flashcards = 10
-        evaluation_questions = []
-        shuffled_pages = list(range(1, num_pages + 1))
-        random.shuffle(shuffled_pages)
 
-        # Pick out the maximum number of flashcards from random pages
-        for page_number in shuffled_pages:
-            page_flashcards = document.flashcards.filter(
-                referenced_page_number=page_number
-            )
-            
-            # Create the flashcards if they have not been created
-            if not page_flashcards.exists():
-                create_flashcards(document, page_number)
-                page_flashcards = document.flashcards.filter(
-                    referenced_page_number=page_number
-                )
+        # Create flashcards for the document if they do not exist
+        if not document.flashcards_created:
+            document_text = '\n'.join(document.metadata['page_texts'].values())
+            create_flashcards(document, document_text)
+            document.flashcards_created = True
+            document.save()
 
-            evaluation_questions.extend(page_flashcards)
-
-            if len(evaluation_questions) >= max_flashcards:
-                evaluation_questions = evaluation_questions[:max_flashcards]
-                break
-
-        serializer = FlashcardSerializer(evaluation_questions, many=True)
+        # Return 10 random flashcards for evaluation
+        flashcards = document.flashcards.order_by('?')[:10]
+        serializer = FlashcardSerializer(flashcards, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
-class EvaluationFeedback(APIView):
+class Feedback(APIView):
     serializer_class = FlashcardSerializer
     
     def post(self, request, *args, **kwargs):

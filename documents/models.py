@@ -13,6 +13,7 @@ class Document(models.Model):
     file = models.FileField()
     created = models.DateTimeField(auto_now_add=True)
     metadata = models.JSONField(default=dict)
+    flashcards_created = models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.name
@@ -42,6 +43,5 @@ class Message(models.Model):
 
 class Flashcard(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE, related_name='flashcards')
-    referenced_page_number = models.IntegerField()
     front = models.TextField(max_length=1024)
     back = models.TextField(max_length=1024)

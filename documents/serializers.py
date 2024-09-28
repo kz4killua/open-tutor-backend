@@ -27,4 +27,4 @@ class MessageSerializer(serializers.ModelSerializer):
 class FlashcardSerializer(serializers.ModelSerializer):
     class Meta:
         model = Flashcard
-        fields = ['id', 'referenced_page_number', 'front', 'back']
+        fields = ['id', 'front', 'back']

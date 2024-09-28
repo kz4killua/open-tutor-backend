@@ -10,14 +10,12 @@ FLASHCARD_CREATE_PROMPT_TEMPLATE = JINJA_ENV.get_template('flashcard_create.jinj
 client = OpenAI()
 
 
-def create_flashcards(document, page_number):
-    """Creates and saves flashcards for a particular page of a document."""
+def create_flashcards(document, text):
+    """Creates and saves flashcard objects using the given text."""
 
-    page_text = document.metadata['page_texts'][str(page_number)]
-    
     # Use an LLM to generate the flashcards
     prompt = FLASHCARD_CREATE_PROMPT_TEMPLATE.render(
-        page_text=page_text
+        text=text
     )
     response = client.chat.completions.create(
         model="gpt-4o-mini",
@@ -31,16 +29,13 @@ def create_flashcards(document, page_number):
     for front, back in parse_llm_response_for_flashcards(response_content):
         Flashcard.objects.create(
             document=document,
-            referenced_page_number=page_number,
             front=front.strip(),
             back=back.strip()
         )
 
 
 def parse_llm_response_for_flashcards(text):
-    """
-    Returns a list of tuples containing flashcard data.
-    """
+    """Extracts flashcards from the LLM response."""
     pattern = r"Front: (.+?)\nBack: (.+?)\n"
     matches = re.findall(pattern, text, re.DOTALL)
     return matches

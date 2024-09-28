@@ -152,17 +152,19 @@ class FlashcardFeedback(APIView):
     
     def post(self, request, *args, **kwargs):
 
-        questions_correct = [
-            flashcard.front for flashcard in get_list_or_404(
-                Flashcard, document__id=self.kwargs['pk'], 
-                document__user=request.user, pk__in=request.data.get('correct')
+        questions_correct =[
+            flashcard.front for flashcard in Flashcard.objects.filter(
+                document__id=self.kwargs['pk'], 
+                document__user=request.user,
+                pk__in=request.data.get('correct')
             )
         ]
 
         questions_wrong = [
-            flashcard.front for flashcard in get_list_or_404(
-                Flashcard, document__id=self.kwargs['pk'], 
-                document__user=request.user, pk__in=request.data.get('wrong')
+            flashcard.front for flashcard in Flashcard.objects.filter(
+                document__id=self.kwargs['pk'], 
+                document__user=request.user,
+                pk__in=request.data.get('wrong')
             )
         ]
 

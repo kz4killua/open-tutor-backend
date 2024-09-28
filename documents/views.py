@@ -106,7 +106,7 @@ class DocumentMessages(generics.ListCreateAPIView):
 
 class Overview(APIView):
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
 
         document = get_object_or_404(Document, user=request.user, pk=self.kwargs['pk'])
 
@@ -121,7 +121,7 @@ class Overview(APIView):
 
 class Flashcards(APIView):
     
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
 
         document = get_object_or_404(Document, user=request.user, pk=self.kwargs['pk'])
 
@@ -140,7 +140,7 @@ class Flashcards(APIView):
 
 class FlashcardsFromText(APIView):
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         document = get_object_or_404(Document, user=request.user, pk=self.kwargs['pk'])
         text = request.data.get('text')
         flashcards = create_flashcards(document, text)
@@ -150,7 +150,7 @@ class FlashcardsFromText(APIView):
 
 class FlashcardFeedback(APIView):
     
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
 
         questions_correct = [
             flashcard.front for flashcard in get_list_or_404(
